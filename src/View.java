@@ -36,7 +36,7 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	 */
 	public static final Color BACKGROUND_GAME_COLOR = new Color(177, 211, 227);
 	private static final int DEFAULT_X_LENGTH = 346;
-	private static final int DEFAULT_Y_LENGTH = 546;
+	private static final int DEFAULT_Y_LENGTH = 566;
 	
 	//Constructor for the UI that takes a model of the game 'x'
 	public View(Model x) {
@@ -56,7 +56,7 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		this.setBackground(BACKGROUND_GAME_COLOR);
 		
 		//Add status label to the UI, which at the start of the game, indicates that Player one has the turn
-		statusLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "Player 1's Turn"));
+		statusLabel= new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
 		statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 		this.add(statusLabel);
 		
