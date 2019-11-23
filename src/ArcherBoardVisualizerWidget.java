@@ -36,7 +36,7 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBackground(View.BACKGROUND_GAME_COLOR);
 		//Add picture of the archer board
-				String imagePath = "/Users/milenpatel/Desktop/board2.png";
+				String imagePath = "board2.png";
 				try {
 					myPicture = ImageIO.read(new File(imagePath));
 				} catch (IOException e) {
@@ -61,7 +61,7 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 		if (game.isGameOver()) {
 			return;
 		}
-		if (game.whoseTurn() == Model.Players.PLAYERONE) {
+		if (game.getCurrentTurn() == Model.Players.PLAYERONE) {
 			g.setColor(Color.BLUE);
 		} else {
 			g.setColor(Color.GREEN);

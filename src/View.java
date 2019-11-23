@@ -8,33 +8,55 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
+/* This class models the data of the game itself by encapsulating an instance of the 'Model' class
+ * The class is an ActionListener so that it can reset the game when the reset button is clicked
+ * The class is an ArcherGameObserver because we observe the state changes of the Model class so that the UI can be updated
+ * The class is an ArcherBoard Observer so we can know when the user has fired an arrow at the board and handle it as needed
+ */
 public class View extends JPanel implements ActionListener, ArcherGameObserver, ArcherBoardObserver{
+	//Encapsulate the instance of the game that the UI is modeling
 	private Model ArcherGameInstance;
+	
+	//Create labels to model the state data of 'ArcherGameInstance'
 	private JLabel playerOneScoreLabel;
 	private JLabel playerTwoScoreLabel;
 	private JLabel statusLabel;
 	private JLabel xWindLabel;
 	private JLabel yWindLabel;
+	
+	//Create a button so the user can reset the game
 	private JButton resetGameButton;
+	
+	//Create a widget to model the Archer board itself
 	private ArcherBoardVisualizerWidget boardView;
 
+	/* Constant for declaring the background color of the entire UI
+	 * Other two constants are for declaring the default dimensions of the board
+	 * Kept public so that ArcherBoardVisualizerWidget can have the same background as the rest of the program
+	 */
 	public static final Color BACKGROUND_GAME_COLOR = new Color(177, 211, 227);
+	private static final int DEFAULT_X_LENGTH = 346;
+	private static final int DEFAULT_Y_LENGTH = 546;
 	
+	//Constructor for the UI that takes a model of the game 'x'
 	public View(Model x) {
 		//Encapsulate model instance variable
 		ArcherGameInstance = x;
+		
 		//Assign ourselves as an observer of the model class
 		ArcherGameInstance.addObserver(this);
+		
 		//Make it have a vertical box layout
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
 		//Set the default screen resolution
-		this.setPreferredSize(new Dimension(346,564));
+		this.setPreferredSize(new Dimension(DEFAULT_X_LENGTH,DEFAULT_Y_LENGTH));
+		
 		//Set Background Color
 		this.setBackground(BACKGROUND_GAME_COLOR);
 		
-		//Add status label to the UI
-		statusLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
+		//Add status label to the UI, which at the start of the game, indicates that Player one has the turn
+		statusLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "Player 1's Turn"));
 		statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 		this.add(statusLabel);
 		
@@ -46,14 +68,13 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		this.add(playerOneScoreLabel);
 		this.add(playerTwoScoreLabel);
 		
-				
-		
-		//Add the reset button to the view
+		//Add the reset button to the view, add ourselves as an observer
 		resetGameButton = new JButton("<html>&nbsp;&nbsp;&nbsp;Reset Game</html>");
 		resetGameButton.setActionCommand("Reset Button");
 		resetGameButton.addActionListener(this);
 		this.add(resetGameButton);
-		//Add visual component of board
+		
+		//Add visual component of board, add ourselves as an observer
 		boardView = new ArcherBoardVisualizerWidget(ArcherGameInstance);
 		this.add(boardView);
 		boardView.addObserver(this);
@@ -108,15 +129,15 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	@Override
 	public void turnChanged() {
 				
-		if (ArcherGameInstance.whoseTurn()==Model.Players.PLAYERONE)
+		if (ArcherGameInstance.getCurrentTurn()==Model.Players.PLAYERONE)
 			statusLabel.setText(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
-		if (ArcherGameInstance.whoseTurn()==Model.Players.PLAYERTWO)
+		if (ArcherGameInstance.getCurrentTurn()==Model.Players.PLAYERTWO)
 			statusLabel.setText(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "  Player 2's Turn"));
 	}
 
 	@Override
 	public void ArcherBoardClickEvent(int numPoints) {
-		ArcherGameInstance.changePlayerScore(ArcherGameInstance.whoseTurn(), numPoints);
+		ArcherGameInstance.changePlayerScore(ArcherGameInstance.getCurrentTurn(), numPoints);
 	}
 
 	@Override

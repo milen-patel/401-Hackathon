@@ -22,10 +22,8 @@ public class Model {
 	//Create a constructor
 	public Model() {
 		observers = new ArrayList<ArcherGameObserver>();
-
 		resetGame();
 	}
-	
 	
 	//Returns the current score of a player
 	public int getPlayerScore(Players x) {
@@ -40,21 +38,24 @@ public class Model {
 	
 	//Resets the game status
 	public void resetGame() {
-		System.out.println("Restarting game");
+		//Generate new wind values
 		generateWindValues();
+		//Set all relevant instance variables to their default
 		player1Score = 0;
 		player2Score = 0;
 		player1Turns = 5;
 		player2Turns = 5;
+		//Game is no longer over
 		isGameOver = false;
+		//Ensure playerone has the first move
 		currentTurn = Players.PLAYERONE;
+		//Notify observers to make relevant UI changes
 		notifyObservers("scoreChange");
 		notifyObservers("TurnChange");
 	}
 	
 	//Increases the score of a player by a specified amount
 	public void changePlayerScore(Players targetPlayer, int amount) {
-		generateWindValues();
 		//Check for bad input
 		if (targetPlayer == null || amount < 0) {
 			throw new RuntimeException("Bad input passed to changePlayerScore method");
@@ -68,11 +69,17 @@ public class Model {
 			player2Score += amount;
 			player2Turns--;
 		}
+		
+		//If neither player has a turn left, then the game is over
 		if (player1Turns == 0 && player2Turns == 0) {
 			notifyObservers("gameOver");
 			isGameOver = true;
 			return;
 		}
+		
+		//Update the wind values before the next turn
+		generateWindValues();
+		
 		//Now switch the turn
 		if (currentTurn==Players.PLAYERONE) {
 			currentTurn=Players.PLAYERTWO;
@@ -86,14 +93,18 @@ public class Model {
 	}
 	
 	//Returns which player currently has a turn
-	public Players whoseTurn() {
+	public Players getCurrentTurn() {
 		return currentTurn;
 	}
 	
+	//Generates random wind values in the range of [-50,50]
 	public void generateWindValues() {
+		//Use the Random class to generate numbers
 	    Random r = new Random(); 
 	    xWind = -50.0 + r.nextDouble() * 100.0; 
 	    yWind = -50.0 + r.nextDouble() * 100.0; 
+	    
+	    //Signal observers to update UI
 		notifyObservers("WindChange");
 	}
 	
@@ -106,28 +117,26 @@ public class Model {
 	}
 	
 	
-	//Handle Observer Methods
+	//Method to add game model observer
 	public void addObserver(ArcherGameObserver O) {
 		observers.add(O);
 	}
+	
+	//Method to remove game model observer
 	public void removeObserver(ArcherGameObserver O) {
 		observers.remove(O);
 	}
+	
+	//Method to notify observers with appropriate methods
 	public void notifyObservers(String event) {
-		if (event=="scoreChange") {
-			for (ArcherGameObserver o : observers) {
-				o.playerScoreChanged();
-			}
-		} else if (event=="TurnChange") {
-			for (ArcherGameObserver o : observers) {
+		for (ArcherGameObserver o : observers) {
+			if (event.equals("TurnChange")) {
 				o.turnChanged();
-			}
-		} else if (event=="WindChange") {
-			for (ArcherGameObserver o : observers) {
+			} else if (event.equals("WindChange")) {
 				o.windValuesUpdated();
-			}
-		} else if (event=="gameOver") {
-			for (ArcherGameObserver o : observers) {
+			} else if (event.equals("ScoreChange")) {
+				o.playerScoreChanged();
+			} else if (event.equals("GameOver")) {
 				if (player1Score > player2Score) {
 					o.gameOver(Players.PLAYERONE);
 				} else {
