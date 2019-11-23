@@ -27,6 +27,8 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	private JLabel playerOneScoreLabel;
 	private JLabel playerTwoScoreLabel;
 	private JLabel statusLabel;
+	private JLabel xWindLabel;
+	private JLabel yWindLabel;
 	private JButton resetGameButton;
 	private JButton clearBoardButton;
 	private ArcherBoardVisualizerWidget boardView;
@@ -57,22 +59,26 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 		this.add(statusLabel);
 		
-		//Lets add the reset and clear board buttons but make them next to each other
-		
+		//Add wind labels to the UI
+		xWindLabel = new JLabel(String.format("<html><b>Horizontal Wind:  <font size=\"6\">%s </font></b></html>", ArcherGameInstance.getXWind()));
+		yWindLabel = new JLabel(String.format("<html><b>Vertical Wind:                     <font size=\"6\">%s </font></b></html>", ArcherGameInstance.getYWind()));
+		xWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+		yWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+		this.add(xWindLabel);
+		this.add(yWindLabel);
 		//Add the reset button to the view
-		resetGameButton = new JButton("Reset Game");
-		resetGameButton.setActionCommand("Reset Button");
-		resetGameButton.addActionListener(this);
-		this.add(resetGameButton);		
+				resetGameButton = new JButton("Reset Game");
+				resetGameButton.setActionCommand("Reset Button");
+				resetGameButton.addActionListener(this);
+				this.add(resetGameButton);		
 
-		//Add clear game button to the view
-		clearBoardButton = new JButton("Clear Board");
-		clearBoardButton.setActionCommand("Clear Button");
-		clearBoardButton.addActionListener(this);
-		this.add(clearBoardButton);
-		
+				//Add clear game button to the view
+				clearBoardButton = new JButton("Clear Board");
+				clearBoardButton.setActionCommand("Clear Button");
+				clearBoardButton.addActionListener(this);
+				this.add(clearBoardButton);
 		//Add visual component of board
-		boardView = new ArcherBoardVisualizerWidget();
+		boardView = new ArcherBoardVisualizerWidget(ArcherGameInstance);
 		this.add(boardView);
 		boardView.addObserver(this);
 			
@@ -82,37 +88,31 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		System.out.println("Some Button Has Been Clicked");
 		if (e.getActionCommand().equals("Reset Button")) {
 			System.out.println("Reset button clicked");
-			//TODO Make the game reset here
-			
-			if (ArcherGameInstance.whoseTurn() == Model.Players.PLAYERTWO)
-				ArcherGameInstance.changePlayerScore(Model.Players.PLAYERTWO, 4);
-			else 
-				ArcherGameInstance.changePlayerScore(Model.Players.PLAYERONE, 4);
-			System.out.println("player score changed");
-			System.out.println(ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE));
-			this.remove(boardView);
-			boardView = new ArcherBoardVisualizerWidget();
-			this.add(boardView);
-			this.revalidate();
-			this.repaint();
 			ArcherGameInstance.resetGame();
+			clearBoard();
 		}
 		
 		if (e.getActionCommand().equals("Clear Button")) {
-			System.out.println("Clearing board");
-			this.remove(boardView);
-			boardView = new ArcherBoardVisualizerWidget();
-			this.add(boardView);
-			this.revalidate();
-			this.repaint();
+			clearBoard();
 		}
 		
+	}
+	
+	public void clearBoard() {
+		System.out.println("Clearing board");
+		this.remove(boardView);
+		boardView = new ArcherBoardVisualizerWidget(ArcherGameInstance);
+		this.add(boardView);
+		boardView.revalidate();
+		boardView.repaint();
 	}
 
 	@Override
 	public void playerScoreChanged() {
 		playerOneScoreLabel.setText(String.format("<html><b>Player One Score:</b> <font size=\"6\"><b>%s</b></font></html>", ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE)));
 		playerTwoScoreLabel.setText(String.format("<html><b>Player Two Score:</b> <font size=\"6\"><b>%s</b></font></html>", ArcherGameInstance.getPlayerScore(Model.Players.PLAYERTWO)));
+		xWindLabel = new JLabel(String.format("<html><b>Horizontal Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getXWind()));
+		yWindLabel = new JLabel(String.format("<html><b>Vertical Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getYWind()));
 	}
 	
 	@Override
@@ -121,6 +121,8 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 			statusLabel.setText(String.format("<html><b>Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
 		if (ArcherGameInstance.whoseTurn()==Model.Players.PLAYERTWO)
 			statusLabel.setText(String.format("<html><b>Status:<font size=\"6\">%s </font></b></html>", "  Player 2's Turn"));
+		xWindLabel = new JLabel(String.format("<html><b>Horizontal Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getXWind()));
+		yWindLabel = new JLabel(String.format("<html><b>Vertical Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getYWind()));
 	}
 
 	@Override

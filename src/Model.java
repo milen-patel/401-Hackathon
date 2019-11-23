@@ -38,14 +38,17 @@ public class Model {
 	//Resets the game status
 	public void resetGame() {
 		System.out.println("Restarting game");
+		generateWindValues();
 		player1Score = 0;
 		player2Score = 0;
 		currentTurn = Players.PLAYERONE;
 		notifyObservers("scoreChange");
+		notifyObservers("TurnChange");
 	}
 	
 	//Increases the score of a player by a specified amount
 	public void changePlayerScore(Players targetPlayer, int amount) {
+		generateWindValues();
 		//Check for bad input
 		if (targetPlayer == null || amount < 0) {
 			throw new RuntimeException("Bad input passed to changePlayerScore method");

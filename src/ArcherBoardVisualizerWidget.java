@@ -25,11 +25,13 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 	private JLabel picLabel;
 	BufferedImage myPicture = null;
 	Graphics2D g;
+	Model game;
 	
 	//Keep a list of observers
 	List<ArcherBoardObserver> observers;
 	
-	public ArcherBoardVisualizerWidget() {
+	public ArcherBoardVisualizerWidget(Model game) {
+		this.game = game;
 		observers = new ArrayList<ArcherBoardObserver>();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBackground(View.BACKGROUND_GAME_COLOR);
@@ -55,8 +57,12 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println(e.getX() + ", " + e.getY());
+		if (game.whoseTurn() == Model.Players.PLAYERONE) {
+			g.setColor(Color.BLUE);
+		} else {
+			g.setColor(Color.GREEN);
+		}
+		//System.out.println(e.getX() + ", " + e.getY());
 		g.drawOval(e.getX()-11, e.getY()-8, 25, 25);
 		g.drawOval(e.getX()-1, e.getY()+2, 5, 5);
 		this.repaint();
@@ -69,7 +75,7 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 		double hypot = Math.sqrt(xDis*xDis + yDis*yDis);
 		int pointValue = (int)(200-hypot);
 		if (pointValue <= 26) {pointValue = 0; } //If we are touching/outside of the edge, no points
-		System.out.println(pointValue);
+		System.out.println("Point Value: " +pointValue);
 		notifyObservers(pointValue);
 		
 	}
