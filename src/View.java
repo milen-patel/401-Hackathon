@@ -79,39 +79,53 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		this.add(boardView);
 		boardView.addObserver(this);
 			
-	
 		//Add wind labels to the UI
-				xWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Horizontal Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getXWind())));
-				yWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Vertical Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getYWind())));
-				xWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
-				yWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
-				this.add(xWindLabel);
-				this.add(yWindLabel);
-				
+		xWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Horizontal Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getXWind())));
+		yWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Vertical Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getYWind())));
+		xWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+		yWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+		this.add(xWindLabel);
+		this.add(yWindLabel);		
 			
 		}
 	
+	/*
+	 * Event handler for when the reset button is clicked
+	 */
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Some Button Has Been Clicked");
+		//Validate that the reset button was clicked
 		if (e.getActionCommand().equals("Reset Button")) {
-			System.out.println("Reset button clicked");
 			ArcherGameInstance.resetGame();
 			//clearBoard();
 		}
-		
+	
 	}
 	
+	/*
+	 * ClearBoard: ideally removes all the markers from the board
+	 * TODO: Fix implementation of clear board
+	 */
 	public void clearBoard() {
-		System.out.println("Clearing board");
+		//Remove ourselves from the view
 		this.remove(boardView);
+		
+		//Create a new game and new board model
 		ArcherGameInstance = new Model();
 		boardView = new ArcherBoardVisualizerWidget(ArcherGameInstance);
+		
+		//Add ourselves back to the view and update the UI
 		this.add(boardView);
 		boardView.validate();
 		boardView.repaint();
 	}
 
 	@Override
+	/*
+	 * Handler for when the player score is changed, View observers Model
+	 * Updates the player scores on the screen with appropriate color coding
+	 * The winning player is highlighted green, the losing player is highlighted red
+	 * If there is a tie, then both players' scores are highlighted yellow
+	 */
 	public void playerScoreChanged() {
 		if (ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE) > ArcherGameInstance.getPlayerScore((Model.Players.PLAYERTWO))) {
 			playerOneScoreLabel.setText(String.format("<html><b>&nbsp;&nbsp;&nbsp;Player One Score:</b> <font size=\"6\"><b><font color='green'>%s</font></b></font> <b>Turns: </b> <font size=\"6\"><b>%s</b></font></html>", ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE), ArcherGameInstance.getPlayer1Turns()));
@@ -127,8 +141,11 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	}
 	
 	@Override
+	/*
+	 * Handler for when the players turn is changed
+	 * This method ensures that the UI is updated to show whose turn it is by updating statusLabel
+	 */
 	public void turnChanged() {
-				
 		if (ArcherGameInstance.getCurrentTurn()==Model.Players.PLAYERONE)
 			statusLabel.setText(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
 		if (ArcherGameInstance.getCurrentTurn()==Model.Players.PLAYERTWO)
@@ -136,11 +153,22 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	}
 
 	@Override
+	/*
+	 * Handler for when a position on the board is clicked
+	 * Recall that View observers ArcherBoardVisualizerWidget
+	 * This method delegates the event handling to the model
+	 */
 	public void ArcherBoardClickEvent(int numPoints) {
 		ArcherGameInstance.changePlayerScore(ArcherGameInstance.getCurrentTurn(), numPoints);
 	}
 
 	@Override
+	/* Handler for when wind values are updated
+	 * Recall that View observes Model
+	 * If wind is > 30, the value will be displayed in red
+	 * If wind is < 5, the value will be displayed in green
+	 * For all other values of wind, it will be displayed yellow
+	 */
 	public void windValuesUpdated() {
 		if (Math.abs(ArcherGameInstance.getXWind()) > 30) {
 			xWindLabel.setText(String.format("<html><b>&nbsp;&nbsp;&nbsp;Horizontal Wind:&nbsp;&nbsp;&nbsp;<font size=\"6\"><font color='red'>%s</font> </font></b></html>",  String.format("%.5g%n", ArcherGameInstance.getXWind())));
@@ -160,6 +188,10 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	}
 
 	@Override
+	/*
+	 * Handler for when the game is over
+	 * This removes the coloring from the wind labels and updates the status label to reflect the current winner
+	 */
 	public void gameOver(Model.Players winner) {
 		playerScoreChanged();
 		xWindLabel.setText(String.format("<html><b>&nbsp;&nbsp;&nbsp;Horizontal Wind:&nbsp;&nbsp;&nbsp;<font size=\"6\">%s</font></b></html>",  String.format("%.5g%n", ArcherGameInstance.getXWind())));
@@ -170,10 +202,5 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		} else {
 			statusLabel.setText("<html><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=\"6\"><font color='green'>Player 2 Wins!</font></font></b></html>");
 		}
-	}
-
-
-
-	
-	
+	}	
 }
