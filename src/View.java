@@ -22,7 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class View extends JPanel implements ActionListener, ArcherGameObserver{
+public class View extends JPanel implements ActionListener, ArcherGameObserver, ArcherBoardObserver{
 	private Model ArcherGameInstance;
 	private JLabel playerOneScoreLabel;
 	private JLabel playerTwoScoreLabel;
@@ -57,6 +57,8 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver{
 		statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 		this.add(statusLabel);
 		
+		//Lets add the reset and clear board buttons but make them next to each other
+		
 		//Add the reset button to the view
 		resetGameButton = new JButton("Reset Game");
 		resetGameButton.setActionCommand("Reset Button");
@@ -72,6 +74,7 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver{
 		//Add visual component of board
 		boardView = new ArcherBoardVisualizerWidget();
 		this.add(boardView);
+		boardView.addObserver(this);
 			
 	}
 	
@@ -118,6 +121,11 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver{
 			statusLabel.setText(String.format("<html><b>Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
 		if (ArcherGameInstance.whoseTurn()==Model.Players.PLAYERTWO)
 			statusLabel.setText(String.format("<html><b>Status:<font size=\"6\">%s </font></b></html>", "  Player 2's Turn"));
+	}
+
+	@Override
+	public void ArcherBoardClickEvent(int numPoints) {
+		ArcherGameInstance.changePlayerScore(ArcherGameInstance.whoseTurn(), numPoints);
 	}
 
 	
