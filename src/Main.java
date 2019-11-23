@@ -18,5 +18,7 @@ public class Main {
 		// Show the window on the screen
 		window.pack();
 		window.setVisible(true);
+		
+		
 	}
 }

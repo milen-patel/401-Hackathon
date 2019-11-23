@@ -22,19 +22,16 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
-
-public class View extends JPanel implements ActionListener, ArcherGameObserver, MouseListener{
+public class View extends JPanel implements ActionListener, ArcherGameObserver{
 	private Model ArcherGameInstance;
 	private JLabel playerOneScoreLabel;
 	private JLabel playerTwoScoreLabel;
 	private JLabel statusLabel;
-	private JLabel picLabel;
 	private JButton resetGameButton;
-	BufferedImage myPicture = null;
-	Graphics2D g;
+	private JButton clearBoardButton;
+	private ArcherBoardVisualizerWidget boardView;
 
-	private static final Color BACKGROUND_GAME_COLOR = new Color(36, 93, 0);
+	public static final Color BACKGROUND_GAME_COLOR = new Color(36, 93, 0);
 	
 	public View(Model x) {
 		//Encapsulate model instance variable
@@ -60,31 +57,22 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 		this.add(statusLabel);
 		
-		
-		//Add picture of the archer board
-		String imagePath = "/Users/milenpatel/Desktop/board2.png";
-		try {
-			myPicture = ImageIO.read(new File(imagePath));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		g = (Graphics2D) myPicture.getGraphics();
-		
-		g.setStroke(new BasicStroke(3));
-		g.setColor(Color.BLUE);
-		
-		picLabel = new JLabel(new ImageIcon(myPicture));
-		this.add(picLabel);
-		//Register ourselves as a MouseListener for the board visual area
-		picLabel.addMouseListener(this);
-		
-		
-		
 		//Add the reset button to the view
 		resetGameButton = new JButton("Reset Game");
 		resetGameButton.setActionCommand("Reset Button");
 		resetGameButton.addActionListener(this);
-		this.add(resetGameButton);
+		this.add(resetGameButton);		
+
+		//Add clear game button to the view
+		clearBoardButton = new JButton("Clear Board");
+		clearBoardButton.setActionCommand("Clear Button");
+		clearBoardButton.addActionListener(this);
+		this.add(clearBoardButton);
+		
+		//Add visual component of board
+		boardView = new ArcherBoardVisualizerWidget();
+		this.add(boardView);
+			
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -92,17 +80,30 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		if (e.getActionCommand().equals("Reset Button")) {
 			System.out.println("Reset button clicked");
 			//TODO Make the game reset here
+			
+			if (ArcherGameInstance.whoseTurn() == Model.Players.PLAYERTWO)
+				ArcherGameInstance.changePlayerScore(Model.Players.PLAYERTWO, 4);
+			else 
+				ArcherGameInstance.changePlayerScore(Model.Players.PLAYERONE, 4);
+			System.out.println("player score changed");
+			System.out.println(ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE));
+			this.remove(boardView);
+			boardView = new ArcherBoardVisualizerWidget();
+			this.add(boardView);
+			this.revalidate();
+			this.repaint();
+			ArcherGameInstance.resetGame();
 		}
-		//TODO Stop making this be useless
-		if (ArcherGameInstance.whoseTurn() == Model.Players.PLAYERTWO)
-			ArcherGameInstance.changePlayerScore(Model.Players.PLAYERTWO, 4);
-		else 
-			ArcherGameInstance.changePlayerScore(Model.Players.PLAYERONE, 4);
-		System.out.println("player score changed");
-		System.out.println(ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE));
 		
-		ArcherGameInstance.resetGame();
-		resetView();
+		if (e.getActionCommand().equals("Clear Button")) {
+			System.out.println("Clearing board");
+			this.remove(boardView);
+			boardView = new ArcherBoardVisualizerWidget();
+			this.add(boardView);
+			this.revalidate();
+			this.repaint();
+		}
+		
 	}
 
 	@Override
@@ -119,49 +120,5 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 			statusLabel.setText(String.format("<html><b>Status:<font size=\"6\">%s </font></b></html>", "  Player 2's Turn"));
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println(e.getX() + ", " + e.getY());
-		g.drawOval(e.getX()-11, e.getY()-8, 25, 25);
-		g.drawOval(e.getX()-1, e.getY()+2, 5, 5);
-		this.repaint();
-		System.out.println(picLabel.getWidth());
-		System.out.println(picLabel.getHeight());
-		
-	}
-
-	public void resetView() {
-		picLabel = new JLabel(new ImageIcon(myPicture));
-		g = (Graphics2D) myPicture.getGraphics();
-		
-		g.setStroke(new BasicStroke(3));
-		g.setColor(Color.BLUE);
-		super.paint(g);
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }
