@@ -22,7 +22,6 @@ public class Model {
 	//Create a constructor
 	public Model() {
 		observers = new ArrayList<ArcherGameObserver>();
-
 		resetGame();
 	}
 	
