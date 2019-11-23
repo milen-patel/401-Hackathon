@@ -57,6 +57,10 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		//If the game is over then do nothing
+		if (game.isGameOver()) {
+			return;
+		}
 		if (game.whoseTurn() == Model.Players.PLAYERONE) {
 			g.setColor(Color.BLUE);
 		} else {

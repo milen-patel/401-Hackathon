@@ -9,9 +9,12 @@ public class Model {
 	//Define instance variables
 	private int player1Score;
 	private int player2Score;
+	private int player1Turns = 5;
+	private int player2Turns = 5;
 	private double xWind;
 	private double yWind;
 	private Players currentTurn;
+	private boolean isGameOver = false;
 	
 	//Keep a list of observers
 	private List<ArcherGameObserver> observers;
@@ -41,6 +44,9 @@ public class Model {
 		generateWindValues();
 		player1Score = 0;
 		player2Score = 0;
+		player1Turns = 5;
+		player2Turns = 5;
+		isGameOver = false;
 		currentTurn = Players.PLAYERONE;
 		notifyObservers("scoreChange");
 		notifyObservers("TurnChange");
@@ -57,10 +63,16 @@ public class Model {
 		//If input is valid, then update the player score
 		if (targetPlayer == Players.PLAYERONE) {
 			player1Score += amount;
+			player1Turns--;
 		} else if (targetPlayer == Players.PLAYERTWO) {
 			player2Score += amount;
+			player2Turns--;
 		}
-	
+		if (player1Turns == 0 && player2Turns == 0) {
+			notifyObservers("gameOver");
+			isGameOver = true;
+			return;
+		}
 		//Now switch the turn
 		if (currentTurn==Players.PLAYERONE) {
 			currentTurn=Players.PLAYERTWO;
@@ -114,7 +126,24 @@ public class Model {
 			for (ArcherGameObserver o : observers) {
 				o.windValuesUpdated();
 			}
+		} else if (event=="gameOver") {
+			for (ArcherGameObserver o : observers) {
+				if (player1Score > player2Score) {
+					o.gameOver(Players.PLAYERONE);
+				} else {
+					o.gameOver(Players.PLAYERTWO);
+				}
+			}
 		}
 	}
 	
+	public int getPlayer1Turns() {
+		return player1Turns;
+	}
+	public int getPlayer2Turns() {
+		return player2Turns;
+	}
+	public boolean isGameOver() {
+		return isGameOver;
+	}
 }
