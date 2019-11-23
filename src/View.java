@@ -29,10 +29,14 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		//Make it have a vertical box layout
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		//Set the default screen resolution
-		this.setPreferredSize(new Dimension(115*3,600));
+		this.setPreferredSize(new Dimension(346,564));
 		//Set Background Color
 		this.setBackground(BACKGROUND_GAME_COLOR);
 		
+		//Add status label to the UI
+		statusLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
+		statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+		this.add(statusLabel);
 		
 		//Add JLabels to the UI with score
 		playerOneScoreLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Player One Score:</b> <font size=\"6\"><b>%s</b></font> <b>Turns: </b> <font size=\"6\"><b>%s</b></font></html>", ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE), ArcherGameInstance.getPlayer1Turns()));
@@ -42,31 +46,27 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		this.add(playerOneScoreLabel);
 		this.add(playerTwoScoreLabel);
 		
-		//Add status label to the UI
-		statusLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
-		statusLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
-		this.add(statusLabel);
 				
-		
-		//Add wind labels to the UI
-		xWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Horizontal Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getXWind())));
-		yWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Vertical Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getYWind())));
-		xWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
-		yWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
-		this.add(xWindLabel);
-		this.add(yWindLabel);
 		
 		//Add the reset button to the view
 		resetGameButton = new JButton("<html>&nbsp;&nbsp;&nbsp;Reset Game</html>");
 		resetGameButton.setActionCommand("Reset Button");
 		resetGameButton.addActionListener(this);
-		this.add(resetGameButton);		
-
-		
+		this.add(resetGameButton);
 		//Add visual component of board
 		boardView = new ArcherBoardVisualizerWidget(ArcherGameInstance);
 		this.add(boardView);
 		boardView.addObserver(this);
+			
+	
+		//Add wind labels to the UI
+				xWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Horizontal Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getXWind())));
+				yWindLabel = new JLabel(String.format("<html><b>&nbsp;&nbsp;&nbsp;Vertical Wind: &nbsp;&nbsp;&nbsp;<font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getYWind())));
+				xWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+				yWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+				this.add(xWindLabel);
+				this.add(yWindLabel);
+				
 			
 		}
 	
@@ -83,10 +83,10 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	public void clearBoard() {
 		System.out.println("Clearing board");
 		this.remove(boardView);
+		ArcherGameInstance = new Model();
 		boardView = new ArcherBoardVisualizerWidget(ArcherGameInstance);
-
 		this.add(boardView);
-		boardView.revalidate();
+		boardView.validate();
 		boardView.repaint();
 	}
 
