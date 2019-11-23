@@ -60,8 +60,8 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 		this.add(statusLabel);
 		
 		//Add wind labels to the UI
-		xWindLabel = new JLabel(String.format("<html><b>Horizontal Wind:  <font size=\"6\">%s </font></b></html>", ArcherGameInstance.getXWind()));
-		yWindLabel = new JLabel(String.format("<html><b>Vertical Wind:                     <font size=\"6\">%s </font></b></html>", ArcherGameInstance.getYWind()));
+		xWindLabel = new JLabel(String.format("<html><b>Horizontal Wind: <font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getXWind())));
+		yWindLabel = new JLabel(String.format("<html><b>Vertical Wind: <font size=\"6\">%s </font></b></html>", String.format("%.5g%n", ArcherGameInstance.getYWind())));
 		xWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 		yWindLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
 		this.add(xWindLabel);
@@ -111,8 +111,6 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 	public void playerScoreChanged() {
 		playerOneScoreLabel.setText(String.format("<html><b>Player One Score:</b> <font size=\"6\"><b>%s</b></font></html>", ArcherGameInstance.getPlayerScore(Model.Players.PLAYERONE)));
 		playerTwoScoreLabel.setText(String.format("<html><b>Player Two Score:</b> <font size=\"6\"><b>%s</b></font></html>", ArcherGameInstance.getPlayerScore(Model.Players.PLAYERTWO)));
-		xWindLabel = new JLabel(String.format("<html><b>Horizontal Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getXWind()));
-		yWindLabel = new JLabel(String.format("<html><b>Vertical Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getYWind()));
 	}
 	
 	@Override
@@ -121,13 +119,17 @@ public class View extends JPanel implements ActionListener, ArcherGameObserver, 
 			statusLabel.setText(String.format("<html><b>Status:<font size=\"6\">%s </font></b></html>", "  Player 1's Turn"));
 		if (ArcherGameInstance.whoseTurn()==Model.Players.PLAYERTWO)
 			statusLabel.setText(String.format("<html><b>Status:<font size=\"6\">%s </font></b></html>", "  Player 2's Turn"));
-		xWindLabel = new JLabel(String.format("<html><b>Horizontal Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getXWind()));
-		yWindLabel = new JLabel(String.format("<html><b>Vertical Wind:<font size=\"6\">%s </font></b></html>", ArcherGameInstance.getYWind()));
 	}
 
 	@Override
 	public void ArcherBoardClickEvent(int numPoints) {
 		ArcherGameInstance.changePlayerScore(ArcherGameInstance.whoseTurn(), numPoints);
+	}
+
+	@Override
+	public void windValuesUpdated() {
+		xWindLabel.setText(String.format("<html><b>Horizontal Wind:<font size=\"6\">%s </font></b></html>",  String.format("%.5g%n", ArcherGameInstance.getXWind())));
+		yWindLabel.setText(String.format("<html><b>Vertical Wind:<font size=\"6\">%s </font></b></html>",  String.format("%.5g%n", ArcherGameInstance.getYWind())));	
 	}
 
 	

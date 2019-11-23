@@ -62,21 +62,27 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 		} else {
 			g.setColor(Color.GREEN);
 		}
-		//System.out.println(e.getX() + ", " + e.getY());
-		g.drawOval(e.getX()-11, e.getY()-8, 25, 25);
-		g.drawOval(e.getX()-1, e.getY()+2, 5, 5);
+
+		g.drawOval((int)(e.getX()-11+game.getXWind()), (int)(e.getY()-8-game.getYWind()), 25, 25);
+		g.drawOval((int)(e.getX()-1+game.getXWind()), (int)(e.getY()+2-game.getYWind()), 5, 5);
+		
 		this.repaint();
-		//System.out.println(picLabel.getWidth());
-		//System.out.println(picLabel.getHeight());
+	
 		double centerCoor = picLabel.getWidth()/2.0;
-		//Calculate the point value:
-		double xDis = Math.abs(centerCoor - e.getX());
-		double yDis = Math.abs(centerCoor - e.getY());
+		double xDis = Math.abs(centerCoor - e.getX()+game.getXWind());
+		double yDis = Math.abs(centerCoor - e.getY()-game.getYWind());
 		double hypot = Math.sqrt(xDis*xDis + yDis*yDis);
+		
 		int pointValue = (int)(200-hypot);
 		if (pointValue <= 26) {pointValue = 0; } //If we are touching/outside of the edge, no points
+		
+		
 		System.out.println("Point Value: " +pointValue);
+
+		
 		notifyObservers(pointValue);
+		
+		
 		
 	}
 
@@ -116,4 +122,5 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 			e.ArcherBoardClickEvent(numPoints);
 		}
 	}
+	
 }

@@ -80,8 +80,9 @@ public class Model {
 	
 	public void generateWindValues() {
 	    Random r = new Random(); 
-	    xWind = -10.0 + r.nextDouble() * 20.0; 
-	    yWind = -10.0 + r.nextDouble() * 20.0; 
+	    xWind = -50.0 + r.nextDouble() * 100.0; 
+	    yWind = -50.0 + r.nextDouble() * 100.0; 
+		notifyObservers("WindChange");
 	}
 	
 	public double getXWind() {
@@ -108,6 +109,10 @@ public class Model {
 		} else if (event=="TurnChange") {
 			for (ArcherGameObserver o : observers) {
 				o.turnChanged();
+			}
+		} else if (event=="WindChange") {
+			for (ArcherGameObserver o : observers) {
+				o.windValuesUpdated();
 			}
 		}
 	}
