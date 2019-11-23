@@ -69,8 +69,8 @@ public class ArcherBoardVisualizerWidget extends JPanel implements MouseListener
 		this.repaint();
 	
 		double centerCoor = picLabel.getWidth()/2.0;
-		double xDis = Math.abs(centerCoor - e.getX()+game.getXWind());
-		double yDis = Math.abs(centerCoor - e.getY()-game.getYWind());
+		double xDis = Math.abs(centerCoor - Math.abs(e.getX()+game.getXWind()));
+		double yDis = Math.abs(centerCoor - Math.abs(e.getY()-game.getYWind()));
 		double hypot = Math.sqrt(xDis*xDis + yDis*yDis);
 		
 		int pointValue = (int)(200-hypot);
