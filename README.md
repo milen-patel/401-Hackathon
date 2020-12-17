@@ -1,6 +1,5 @@
 # 401 Hackathon Entry
 
-<img src="demo.png" width="348">
 
 This is my entry for UNC's 'Cirque de 401' Hackathon hosted on November 23, 2019.  
 
@@ -10,3 +9,4 @@ The game allows two players to compete by giving them a total of five shots each
 
 
 
+<img src="demo.png" width="348">
