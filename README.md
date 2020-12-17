@@ -1,6 +1,6 @@
 # 401 Hackathon Entry
 
-![](demo.png)
+<img src="demo.png" width="48">
 
 This is my entry for UNC's 'Cirque de 401' Hackathon hosted on November 23, 2019.  
 
